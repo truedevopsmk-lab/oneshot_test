@@ -1,64 +1,125 @@
+Here you go, Jarvis-style: clean, concise inline comments added to every parameter so your teammates instantly understand what each field does.
+
+I’ll keep the comments short and directly above the fields so the template stays readable.
+
+⸻
+
+✅ EKS Cluster Template with Inline Comments
+
+# eksctl schema version
 apiVersion: eksctl.io/v1alpha5
+
+# Declares that this file defines an EKS cluster config
 kind: ClusterConfig
 
 metadata:
+  # Cluster name (dynamic based on CLUSTER_NAME env var)
   name: ${CLUSTER_NAME}-uswt2-eks-cluster
+
+  # AWS region where the cluster will be created
   region: us-west-2
+
+  # EKS Kubernetes version
   version: "1.32"
 
 vpc:
+  # Existing VPC ID where the cluster will be deployed
   id: vpc-08a80834636025c17
+
+  # Subnet mappings for EKS control plane + nodes
   subnets:
-    private:
+    private: # Private subnets used for worker nodes
       us-west-2a:
+        # Existing private subnet ID in AZ 2a
         id: subnet-0b3a6a1bb2cd49607
       us-west-2b:
+        # Existing private subnet ID in AZ 2b
         id: subnet-0ec2230b5b40f39c4
-    public:
+
+    public: # Public subnets (mainly for ALB load balancers)
       us-west-2a:
+        # Existing public subnet ID in AZ 2a
         id: subnet-0b3201ea206ee015d
       us-west-2b:
+        # Existing public subnet ID in AZ 2b
         id: subnet-0c81996babae4b7b2
 
   clusterEndpoints:
+    # Allow API access from the public internet
     publicAccess: true
+
+    # Allow API access from inside the VPC
     privateAccess: true
 
 managedNodeGroups:
-  - name: ng-${CLUSTER_NAME}-eks-cluster
+  # Each element defines one node group
+  - name: ng-${CLUSTER_NAME}-eks-cluster  # Node group name
+
+    # EC2 instance type for worker nodes
     instanceType: t3.medium
+
+    # Initial number of nodes in the node group
     desiredCapacity: 2
+
+    # Minimum autoscaling limit
     minSize: 1
+
+    # Maximum autoscaling limit
     maxSize: 3
 
+    # Specify AMI family (Amazon Linux 2023 optimized for EKS)
     amiFamily: AmazonLinux2023
+
+    # Custom AMI ID if needed (overrides default AL2023 image)
     ami: ami-063a81f8743fece51
 
+    # Ensure nodes are created ONLY in private subnets
     privateNetworking: true
 
     ssh:
+      # Allow SSH access to nodes
       allow: true
+
+      # EC2 keypair to attach for SSH logins
       publicKeyName: ${CLUSTER_NAME}-sshkey
 
     securityGroups:
+      # Attach existing security groups to the node group
       attachIDs:
         - sg-03afdf513c0c04772
 
     labels:
+      # Kubernetes labels applied to the node group
       role: app
 
     tags:
+      # AWS tags applied to EC2 instances
       Name: ng-${CLUSTER_NAME}-eks-cluster
 
 cloudWatch:
   clusterLogging:
+    # Enable specific EKS control plane logs
     enableTypes:
-      - api
-      - audit
-      - authenticator
+      - api             # Kubernetes API server logs
+      - audit           # Audit logs
+      - authenticator   # Authenticator component logs
 
 iam:
+  # Enable IAM OIDC provider for IRSA (Pod -> IAM role access)
   withOIDC: true
 
 autoModeConfig:
+    # Enable EKS Auto-Mode for managed compute/storage/networking
     enabled: true
+
+
+⸻
+
+✅ If you want, I can also:
+
+✔ Add comments explaining what NOT to modify
+✔ Add default values cheat-sheet at the bottom of the file
+✔ Add a cluster-vars.yaml version where users only edit variables
+✔ Add validation steps in README to avoid mismatched subnet or VPC errors
+
+Just tell me “Jarvis make this even more helpful” and I’ll refine it.
