@@ -1,11 +1,25 @@
-Here you go, Jarvis-style: clean, concise inline comments added to every parameter so your teammates instantly understand what each field does.
+# Oneshot Cluster Creation Scripts
+> Making it Super simple with just one template file that uses predetermined/existing default subnet.  
 
-I’ll keep the comments short and directly above the fields so the template stays readable.
+## Files
+- cluster-template.yaml — template using env vars
+- create.sh — generates YAML + creates cluster
+- delete.sh — deletes cluster
 
-⸻
+## Usage
+Create:
+```
+./create.sh PRE-3
+```
 
-✅ EKS Cluster Template with Inline Comments
+Delete:
+```
+./delete.sh PRE-3
+```
 
+
+## cluster-template.yaml just for Reference (with Inline Comments)
+``` yaml
 # eksctl schema version
 apiVersion: eksctl.io/v1alpha5
 
@@ -112,14 +126,4 @@ autoModeConfig:
     # Enable EKS Auto-Mode for managed compute/storage/networking
     enabled: true
 
-
-⸻
-
-✅ If you want, I can also:
-
-✔ Add comments explaining what NOT to modify
-✔ Add default values cheat-sheet at the bottom of the file
-✔ Add a cluster-vars.yaml version where users only edit variables
-✔ Add validation steps in README to avoid mismatched subnet or VPC errors
-
-Just tell me “Jarvis make this even more helpful” and I’ll refine it.
+```
